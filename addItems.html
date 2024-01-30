@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Items</title>
+  <style>
+    #successAlert {
+      display: none;
+    }
+
+    #dangerAlert {
+      display: none;
+    }
+  </style>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous">
+    </script>
+
+</head>
+
+<body>
+  <header>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="index.html">Inventory Management</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="itemlist.html">Item List</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="./addItems.html">Add Items</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container">
+    <h1>Add Items</h1>
+    <div class="alert alert-success" role="alert" id="successAlert">
+      Item Added Successfully!
+    </div>
+
+    <div class="alert alert-danger" role="alert" id="dangerAlert">
+      Failed to add Item. Please try again!
+    </div>
+
+    <form id="inputForm">
+      <label for="itemName" class="form-label">Item Name:</label>
+      <input type="text" id="itemName" class="form-control" required><br>
+
+      <label for="itemQuantity" class="form-label">Quantity:</label>
+      <input type="number" id="itemQuantity" class="form-control" required><br>
+
+      <label for="selectCategory">Category:</label><br>
+      <select id="selectCategory">
+        <option value="perishable">Perishable</option>
+        <option value="non-perishable">Non-Perishable</option>
+      </select><br><br>
+
+      <button type="submit" class="btn btn-primary">Add Items</button>
+    </form>
+  </main>
+
+
+  <script>
+    const inputForm = document.querySelector('#inputForm');
+    const itemName = document.querySelector('#itemName');
+    const itemQuantity = document.querySelector('#itemQuantity');
+    const selectCategory = document.querySelector('#selectCategory')
+    const successAlert = document.querySelector('#successAlert')
+    const dangerAlert = document.querySelector('#dangerAlert')
+
+    const apiUrl = 'https://inventory-management-student-neog-ca.replit.app/inventory'
+
+
+    inputForm.addEventListener('submit', function (event) {
+      event.preventDefault()
+
+      const userInput = {
+        itemName: itemName.value,
+        quantity: itemQuantity.value,
+        category: selectCategory.value
+      }
+
+      fetch(apiUrl, {
+        method: "POST",
+        body: JSON.stringify(userInput),
+        headers: {
+          'content-type': 'application/json'
+        }
+      })
+        .then(function (response) {
+          return response.json()
+        })
+        .then(function (data) {
+          if (data) {
+            console.log(data);
+            dangerAlert.style.display = 'none'
+            successAlertMsg()
+          } else {
+            successAlert.textContent = "Couldn't add Data!!"
+            successAlertMsg()
+          }
+        })
+        .catch(function (error) {
+          successAlert.style.display = 'none'
+          dangerAlertMsg()
+        })
+    })
+
+    function successAlertMsg() {
+      successAlert.style.display = 'block'
+    }
+
+    function dangerAlertMsg() {
+      dangerAlert.style.display = 'block'
+    }
+  </script>
+</body>
+
+</html>
